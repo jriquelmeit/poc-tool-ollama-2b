@@ -1,0 +1,22 @@
+[project]
+name = "ollama-tool"
+version = "0.1.0"
+description = "Minimal local CLI for Ollama"
+requires-python = ">=3.11"
+dependencies = [
+  "typer>=0.12",
+  "requests>=2.31",
+  "python-dotenv>=1.0",
+  "rich>=13.7",
+  "hatchling>=1.31.0",
+]
+
+[project.scripts]
+ollama-tool = "tool.cli:app"
+
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tool"]
