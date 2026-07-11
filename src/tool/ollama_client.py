@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from os import getenv
+from typing import Any
 
 import requests
 from dotenv import load_dotenv
@@ -43,3 +44,25 @@ def ask_ollama(settings: Settings, prompt: str) -> str:
 
     payload = response.json()
     return payload.get("response", "")
+
+
+def chat_ollama(settings: Settings, messages: list[dict[str, str]]) -> str:
+    try:
+        response = requests.post(
+            f"{settings.base_url}/api/chat",
+            json={
+                "model": settings.model,
+                "messages": messages,
+                "stream": False,
+            },
+            timeout=120,
+        )
+        response.raise_for_status()
+    except requests.RequestException as exc:
+        raise OllamaClientError(
+            f"No se pudo conectar con Ollama en {settings.base_url}"
+        ) from exc
+
+    payload: dict[str, Any] = response.json()
+    message = payload.get("message", {})
+    return message.get("content", "")

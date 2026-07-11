@@ -4,6 +4,7 @@ import typer
 
 from pathlib import Path
 
+from .commands.chat import run_chat
 from .commands.review import run_review
 from .ollama_client import OllamaClientError, ask_ollama, load_settings
 from .output import console, render_markdown
@@ -37,6 +38,15 @@ def review(
 ):
     """Review files or directories with Ollama."""
     run_review(paths, prompt)
+
+
+@app.command()
+def chat(
+    reset: bool = typer.Option(False, "--reset", help="Limpia el historial al iniciar"),
+    session: str = typer.Option("default", "--session", help="Nombre de la sesión persistida"),
+):
+    """Interactive chat with Ollama."""
+    run_chat(reset=reset, session=session)
 
 
 if __name__ == "__main__":

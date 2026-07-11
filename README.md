@@ -45,9 +45,11 @@ poc-gemma2-2b/
       context.py
       commands/
         __init__.py
+        chat.py
         review.py
       ollama_client.py
       prompts/
+        chat.md
         review.md
 ```
 
@@ -139,6 +141,27 @@ También muestra un indicador de carga mientras espera la respuesta del modelo.
 
 La respuesta se renderiza en consola con formato Markdown para que sea más legible.
 
+### 💬 `chat`
+
+`chat` abre una sesión interactiva en terminal usando el endpoint `/api/chat` de Ollama.
+
+```bash
+python3 -m uv run ollama-tool chat
+python3 -m uv run ollama-tool chat --reset
+python3 -m uv run ollama-tool chat --session mi-sesion
+```
+
+Durante la sesión puedes usar estos comandos internos:
+
+- `exit` o `quit`: cerrar la sesión.
+- `reset`: limpiar el historial actual.
+- `help`: ver los comandos disponibles.
+
+Puedes usar `--session` para persistir el historial entre ejecuciones. Cada sesión se guarda en `~/.config/ollama-tool/chat/`.
+
+El prompt base del chat vive en `src/tool/prompts/chat.md`.
+La conversación mantiene historial en memoria durante la sesión activa y también puede persistirse por sesión.
+
 ## 🔌 Conexión con Ollama
 
 La CLI usa el endpoint:
@@ -161,16 +184,19 @@ Si el servidor responde, la CLI debería poder comunicarse con Ollama sin proble
 - ✅ Usa `gemma2:2b` por defecto
 - ✅ Ejecuta el comando `ask`
 - ✅ Ejecuta el comando `review`
+- ✅ Ejecuta el comando `chat`
 - ✅ Lee prompts por defecto desde archivos `.md`
 - ✅ Muestra un indicador de carga mientras Ollama responde
 - ✅ Renderiza la salida del modelo con formato Markdown
 - ✅ Muestra errores de conexión de forma clara
+- ✅ Persiste el historial de `chat` por sesión
 
 ## 🛣️ Roadmap
 
 - 📝 `summarize --diff`
 - 🔍 `explain <archivo>`
 - 💬 `chat` interactivo
+- 💾 persistencia opcional de historial por sesión
 - 📄 salida en JSON
 - 🧭 mejor manejo de contexto de código
 
