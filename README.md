@@ -116,9 +116,28 @@ python3 -m uv run ollama-tool review src/a.py src/b.py
 python3 -m uv run ollama-tool review src/ --prompt "Busca bugs, riesgos y mejoras"
 ```
 
-El comando `review` acepta archivos, varios archivos o directorios. Cuando recibe un directorio, recorre el contenido de forma recursiva e incluye archivos de texto relevantes.
+### 🔍 `review`
 
-El prompt por defecto de revisión vive en `src/tool/prompts/review.md`.
+`review` es el comando pensado para revisar código con contexto real del proyecto.
+
+Soporta:
+
+- un archivo único,
+- varios archivos,
+- un directorio completo.
+
+Cuando recibe un directorio, recorre el contenido de forma recursiva e incluye archivos de texto relevantes.
+
+Ejemplos:
+
+- `python3 -m uv run ollama-tool review src/main.py`
+- `python3 -m uv run ollama-tool review src/a.py src/b.py`
+- `python3 -m uv run ollama-tool review src/ --prompt "Busca bugs, riesgos y mejoras"`
+
+`review` usa un prompt por defecto definido en `src/tool/prompts/review.md`.
+También muestra un indicador de carga mientras espera la respuesta del modelo.
+
+La respuesta se renderiza en consola con formato Markdown para que sea más legible.
 
 ## 🔌 Conexión con Ollama
 
@@ -143,6 +162,8 @@ Si el servidor responde, la CLI debería poder comunicarse con Ollama sin proble
 - ✅ Ejecuta el comando `ask`
 - ✅ Ejecuta el comando `review`
 - ✅ Lee prompts por defecto desde archivos `.md`
+- ✅ Muestra un indicador de carga mientras Ollama responde
+- ✅ Renderiza la salida del modelo con formato Markdown
 - ✅ Muestra errores de conexión de forma clara
 
 ## 🛣️ Roadmap
