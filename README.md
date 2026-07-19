@@ -144,6 +144,7 @@ La respuesta se renderiza en consola con formato Markdown para que sea más legi
 ### 💬 `chat`
 
 `chat` abre una sesión interactiva en terminal usando el endpoint `/api/chat` de Ollama.
+La respuesta se va imprimiendo en vivo mientras el modelo responde.
 
 ```bash
 python3 -m uv run ollama-tool chat
@@ -187,6 +188,7 @@ Si el servidor responde, la CLI debería poder comunicarse con Ollama sin proble
 - ✅ Ejecuta el comando `chat`
 - ✅ Lee prompts por defecto desde archivos `.md`
 - ✅ Muestra un indicador de carga mientras Ollama responde
+- ✅ Imprime la respuesta de `chat` en vivo
 - ✅ Renderiza la salida del modelo con formato Markdown
 - ✅ Muestra errores de conexión de forma clara
 - ✅ Persiste el historial de `chat` por sesión

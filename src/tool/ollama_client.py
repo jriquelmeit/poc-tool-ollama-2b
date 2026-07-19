@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 from os import getenv
-from typing import Any
+from typing import Any, Callable
 
 import requests
 from dotenv import load_dotenv
@@ -47,14 +48,23 @@ def ask_ollama(settings: Settings, prompt: str) -> str:
 
 
 def chat_ollama(settings: Settings, messages: list[dict[str, str]]) -> str:
+    return chat_ollama_stream(settings, messages, on_chunk=None)
+
+
+def chat_ollama_stream(
+    settings: Settings,
+    messages: list[dict[str, str]],
+    on_chunk: Callable[[str], None] | None,
+) -> str:
     try:
         response = requests.post(
             f"{settings.base_url}/api/chat",
             json={
                 "model": settings.model,
                 "messages": messages,
-                "stream": False,
+                "stream": True,
             },
+            stream=True,
             timeout=120,
         )
         response.raise_for_status()
@@ -63,6 +73,20 @@ def chat_ollama(settings: Settings, messages: list[dict[str, str]]) -> str:
             f"No se pudo conectar con Ollama en {settings.base_url}"
         ) from exc
 
-    payload: dict[str, Any] = response.json()
-    message = payload.get("message", {})
-    return message.get("content", "")
+    parts: list[str] = []
+    try:
+        for line in response.iter_lines(decode_unicode=True):
+            if not line:
+                continue
+
+            payload: dict[str, Any] = json.loads(line)
+            message = payload.get("message", {})
+            content = message.get("content", "")
+            if content:
+                parts.append(content)
+                if on_chunk is not None:
+                    on_chunk(content)
+    finally:
+        response.close()
+
+    return "".join(parts)
